@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const User = require('./../models/user');
-const {jwtAuthMiddleware, generateToken} = require('./../jwt');
+const { jwtAuthMiddleware, generateToken } = require('./../jwt');
 
 // POST route to add a person
-router.post('/signup', async (req, res) =>{
-    try{
+router.post('/signup', async (req, res) => {
+    try {
         const data = req.body // Assuming the request body contains the User data
 
         // Check if there is already an admin user
@@ -38,19 +38,19 @@ router.post('/signup', async (req, res) =>{
         console.log(JSON.stringify(payload));
         const token = generateToken(payload);
 
-        res.status(200).json({response: response, token: token});
+        res.status(200).json({ response: response, token: token });
     }
-    catch(err){
+    catch (err) {
         console.log(err);
-        res.status(500).json({error: 'Internal Server Error'});
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 })
 
 // Login Route
-router.post('/login', async(req, res) => {
-    try{
+router.post('/login', async (req, res) => {
+    try {
         // Extract aadharCardNumber and password from request body
-        const {aadharCardNumber, password} = req.body;
+        const { aadharCardNumber, password } = req.body;
 
         // Check if aadharCardNumber or password is missing
         if (!aadharCardNumber || !password) {
@@ -58,11 +58,11 @@ router.post('/login', async(req, res) => {
         }
 
         // Find the user by aadharCardNumber
-        const user = await User.findOne({aadharCardNumber: aadharCardNumber});
+        const user = await User.findOne({ aadharCardNumber: aadharCardNumber });
 
         // If user does not exist or password does not match, return error
-        if( !user || !(await user.comparePassword(password))){
-            return res.status(401).json({error: 'Invalid Aadhar Card Number or Password'});
+        if (!user || !(await user.comparePassword(password))) {
+            return res.status(401).json({ error: 'Invalid Aadhar Card Number or Password' });
         }
 
         // generate Token 
@@ -72,8 +72,8 @@ router.post('/login', async(req, res) => {
         const token = generateToken(payload);
 
         // resturn token as response
-        res.json({token})
-    }catch(err){
+        res.json({ token })
+    } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -81,12 +81,12 @@ router.post('/login', async(req, res) => {
 
 // Profile route
 router.get('/profile', jwtAuthMiddleware, async (req, res) => {
-    try{
+    try {
         const userData = req.user;
         const userId = userData.id;
         const user = await User.findById(userId);
-        res.status(200).json({user});
-    }catch(err){
+        res.status(200).json({ user });
+    } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
     }

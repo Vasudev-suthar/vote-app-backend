@@ -1,4 +1,4 @@
-const mongoose = require ("mongoose");
+const mongoose = require("mongoose");
 
 const candidateSchema = new mongoose.Schema(
     {
@@ -6,11 +6,11 @@ const candidateSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        party:{
+        party: {
             type: String,
             require: true
         },
-        age:{
+        age: {
             type: String,
             require: true
         },
